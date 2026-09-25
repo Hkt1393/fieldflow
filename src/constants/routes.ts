@@ -1,0 +1,14 @@
+export const ROUTES = {
+  Auth: 'Auth',
+  Login: 'Login',
+  App: 'App',
+  Tabs: 'Tabs',
+  Dashboard: 'Dashboard',
+  Leads: 'Leads',
+  LeadDetails: 'LeadDetails',
+  CreateLead: 'CreateLead',
+  EditLead: 'EditLead',
+  FollowUps: 'FollowUps',
+  CreateFollowUp: 'CreateFollowUp',
+  More: 'More',
+} as const;
