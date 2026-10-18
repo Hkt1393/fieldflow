@@ -47,20 +47,29 @@ Avoid premature abstraction and unnecessary dependencies.
 # 2. TECHNOLOGY STACK
 ==================================================
 
-The project uses:
+### Currently installed / configured
 
-- Expo
-- React Native
-- TypeScript
-- React Navigation
-- Redux Toolkit
-- React Hook Form
-- Zod
-- Supabase
+Confirmed by `package.json` and `package-lock.json`:
 
-Do not introduce additional libraries without first evaluating whether the existing stack can solve the problem.
+- Expo `~57.0.25` (locked `57.0.25`), React Native `0.86.3`, and React `19.2.3`.
+- TypeScript `~6.0.3` (locked `6.0.3`).
+- React Navigation: `@react-navigation/native` `^7.4.1` (locked `7.4.1`), `@react-navigation/native-stack` and `@react-navigation/bottom-tabs` `^7.19.2` (locked `7.19.2`).
+- Redux Toolkit `^2.12.0` (locked `2.12.0`) and React Redux `^9.3.0` (locked `9.3.0`).
+- Expo Font `~57.0.4` (locked `57.0.4`), Expo Status Bar `~57.0.1` (locked `57.0.1`), Inter fonts `^0.4.2` (locked `0.4.2`), safe-area context `~5.7.0` (locked `5.7.0`), React Native Screens `~4.26.0` (locked `4.26.2`), and React Native SVG `15.15.4`.
 
-Do not upgrade or replace major dependencies without justification.
+### Planned / not yet integrated
+
+- React Hook Form: not declared in the project dependencies or lockfile, and not imported by application source.
+- Zod: present in the lockfile only as an Expo tooling transitive dependency; it is not a direct project dependency and is not imported by application source.
+- Supabase: no Supabase package is declared or locked, and application source does not initialize or call a Supabase client.
+
+Do not import or use planned technologies in application code until they have been intentionally added and configured. A transitive dependency does not count as an application dependency or integration.
+
+### Dependency discipline
+
+- Prefer existing project capabilities and dependencies; evaluate necessity and maintenance cost before adding a package.
+- For Expo-compatible packages, use `npx expo install <package>`. Use `bunx expo install <package>` if the project uses Bun (`bun.lock` is present).
+- Do not upgrade or replace major dependencies without justification.
 
 ==================================================
 # 3. SCREEN MVVM ARCHITECTURE
@@ -474,17 +483,29 @@ Shared components should remain domain-agnostic.
 # 14. DATA FLOW
 ==================================================
 
-The required architecture is:
+The required data flow is:
 
-Screen
+Screen View
 ↓
-Container
+Container / ViewModel
 ↓
-Hook
+Feature Hook
 ↓
-Service / Repository
+Service
+↓
+Repository / Data Access
 ↓
 Data Source
+
+Responsibilities:
+
+- **View:** Render UI from props and shared components, and send user interactions through callbacks. Do not access APIs, Supabase, repositories, Redux business logic, or persistence. Do not implement business rules or business calculations.
+- **Container / ViewModel:** Coordinate screen state, event handlers, navigation, and data passed to the View. Do not issue database queries directly.
+- **Feature Hook:** Coordinate feature-specific data loading, mutations, and state through the established service/data-access boundary. Do not bypass that boundary.
+- **Service:** Coordinate feature operations and business rules when needed. Use the data-access layer rather than allowing UI components to query the database.
+- **Repository / Data Access:** Define or implement typed data contracts and isolate persistence details so mock and Supabase sources can be exchanged without rewriting screens.
+
+Do not add layers that do not provide a useful boundary for the feature. Keep simple functionality simple and consistent with the existing codebase.
 
 UI must NEVER directly call Supabase.
 
@@ -499,6 +520,32 @@ inside:
 - reusable UI components
 
 Supabase access belongs inside the service/data layer.
+
+### Mock-first feature development
+
+- Define domain types and the typed data contract before building data-dependent UI. Use the same contract for mock and Supabase implementations.
+- Keep deterministic mock fixtures separate from mutable repository state and use stable IDs for tests.
+- Select the data source centrally; do not scatter mock-mode conditionals across screens and hooks. Do not silently fall back to mock data when a Supabase request fails.
+- Keep one source of truth for each entity within the selected data source. Ensure create, read, update, and delete operations stay consistent across list, detail, and edit screens.
+- Model relationships explicitly, such as follow-ups linked to leads. Derive dashboard metrics from feature data rather than hardcoding them.
+- Make mock data useful for testing loading, empty, error, filtering, sorting, validation, and ordinary user workflows.
+
+Do not add repository layers where they are unnecessary; use the lightest boundary that keeps data access replaceable and typed.
+
+### Future AI integration (planned, not implemented)
+
+Potential AI capabilities include drafting lead follow-ups, summarizing notes, suggesting next actions, and answering natural-language questions about authorized CRM records. These remain optional additions, separate from core CRM operations. Use this request flow:
+
+`Screen View → Container / ViewModel → AI Feature Hook → AI Service → Secure Backend Endpoint → AI Provider`
+
+- Keep provider-specific code behind a replaceable service boundary. Never put a provider's private API key in the mobile app; route provider requests through a secured backend endpoint or server-side function.
+- Authenticate and authorize each request before accessing customer data, preserve Supabase authorization and Row Level Security, and send only the minimum information needed.
+- Validate inputs and model outputs. Handle timeouts, unavailable providers, rate limits, and quota exhaustion. The app must remain usable when AI is disabled or unavailable.
+- Treat generated content as a suggestion for user review. Do not let AI send customer communications or make consequential changes without explicit user approval.
+- Before selecting a provider, review current pricing, free-tier limits, privacy terms, and data-retention policies. Do not send confidential customer information until its data-handling terms have been evaluated.
+- A free API tier may be investigated for development, but do not assume free usage is unlimited, permanent, production-ready, or appropriate for confidential data.
+
+Do not select a provider, install an SDK, create AI services, add dependencies, or implement AI functionality without a separate approved task.
 
 ==================================================
 # 15. SUPABASE
@@ -645,6 +692,14 @@ Feature hooks/services
 Redux Toolkit
 → genuine global application state
 
+Repository / data-access layer
+→ persistence and data-source details
+
+Supabase
+→ remote persistence and authorization when integrated
+
+Keep state ownership explicit: local component state is for transient UI state; React Hook Form and Zod own form state and validation; feature hooks/services coordinate feature data operations; Redux Toolkit owns only genuinely shared application state; and the repository/data-access layer owns persistence details. Do not put all application data in Redux by default or introduce another state-management library without a justified architectural review.
+
 ==================================================
 # 21. NAVIGATION
 ==================================================
@@ -785,13 +840,19 @@ Avoid:
 # 28. CHANGE DISCIPLINE
 ==================================================
 
-When implementing a feature:
+When implementing a feature or scoped task:
 
-1. Inspect.
-2. Plan.
-3. Implement.
-4. Verify.
-5. Report.
+1. Inspect the relevant code, current architecture, and existing uncommitted changes.
+2. Identify reusable components, utilities, services, and types.
+3. Propose a bounded implementation plan before substantial changes.
+4. Implement one feature or clearly scoped task at a time.
+5. Preserve behavior outside the task's scope.
+6. Run `npx tsc --noEmit`, `npm run lint`, and relevant tests when applicable.
+7. Review the complete diff for unrelated changes.
+8. Report verified results and remaining manual checks accurately.
+9. Never claim a test, build, or visual inspection passed unless it was actually performed.
+
+Before implementing a feature or changing architecture, consult this `AGENTS.md` and follow the established project structure.
 
 Do not implement unrelated improvements.
 

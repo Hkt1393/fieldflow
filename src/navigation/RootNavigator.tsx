@@ -13,7 +13,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export const RootNavigator = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const authenticationContext = useMemo(
-    () => ({ onContinue: () => setIsAuthenticated(true) }),
+    () => ({
+      onContinue: () => setIsAuthenticated(true),
+      onSignOut: () => setIsAuthenticated(false),
+    }),
     [],
   );
 

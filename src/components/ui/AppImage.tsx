@@ -1,12 +1,17 @@
-import { Image, type ImageProps, type ImageStyle, type StyleProp } from 'react-native';
+import { Image, type ImageProps, type ImageResizeMode, type ImageStyle, type StyleProp } from 'react-native';
 
-export type AppImageProps = Omit<ImageProps, 'style'> & {
-  borderRadius?: number;
-  height: number;
+export type AppImageProps = Omit<ImageProps, 'accessibilityLabel' | 'resizeMode' | 'style'> & {
+  accessibilityLabel: string;
+  resizeMode?: ImageResizeMode;
   style?: StyleProp<ImageStyle>;
-  width: number;
 };
 
-export const AppImage = ({ borderRadius, height, style, width, ...props }: AppImageProps) => (
-  <Image {...props} style={[{ width, height, borderRadius }, style]} />
+export const AppImage = ({ accessibilityLabel, resizeMode = 'cover', style, ...props }: AppImageProps) => (
+  <Image
+    {...props}
+    accessible
+    accessibilityLabel={accessibilityLabel}
+    resizeMode={resizeMode}
+    style={style}
+  />
 );

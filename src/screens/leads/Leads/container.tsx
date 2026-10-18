@@ -4,15 +4,13 @@ import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { strings } from '../../../constants/strings';
 import { ROUTES } from '../../../constants/routes';
-import type { LeadSummary } from '../../../features/leads/types';
+import { useLeads } from '../../../features/leads/hooks/useLeads';
+import type { LeadPriority, LeadStatus } from '../../../features/leads/types';
 import type { AppStackParamList, TabParamList } from '../../../navigation/types';
 import LeadsView from './view';
 
 type SortOrder = 'updated' | 'value';
-
-const leads: LeadSummary[] = [...strings.leads.sampleLeads];
 
 const LeadsContainer = () => {
   const navigation = useNavigation<
@@ -23,25 +21,38 @@ const LeadsContainer = () => {
   >();
   const [search, setSearch] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('updated');
+  const [selectedStage, setSelectedStage] = useState<LeadStatus | undefined>();
+  const [selectedPriority, setSelectedPriority] = useState<LeadPriority | undefined>();
 
-  const normalizedSearch = search.trim().toLowerCase();
-  const filteredLeads = leads.filter((lead) =>
-    `${lead.name} ${lead.title} ${lead.company}`.toLowerCase().includes(normalizedSearch),
-  );
-  const visibleLeads = sortOrder === 'updated'
-    ? filteredLeads
-    : [...filteredLeads].sort((first, second) =>
-      Number(second.value.replace(/[$,]/g, '')) - Number(first.value.replace(/[$,]/g, '')),
-    );
+  const { leads, isLoading, hasError, retry } = useLeads({
+    search,
+    stage: selectedStage,
+    priority: selectedPriority,
+    sortBy: sortOrder === 'updated' ? 'updatedAt' : 'dealValueCents',
+    sortDirection: 'desc',
+  });
+  const selectedFilterCount = Number(Boolean(selectedStage)) + Number(Boolean(selectedPriority));
 
   return (
     <LeadsView
-      leads={visibleLeads}
+      hasError={hasError}
+      isLoading={isLoading}
+      leads={leads}
       search={search}
+      selectedFilterCount={selectedFilterCount}
+      selectedPriority={selectedPriority}
+      selectedStage={selectedStage}
       sortOrder={sortOrder}
       onAddLead={() => navigation.navigate(ROUTES.CreateLead)}
       onChangeSearch={setSearch}
-      onOpenLead={() => navigation.navigate(ROUTES.LeadDetails)}
+      onOpenLead={(leadId) => navigation.navigate(ROUTES.LeadDetails, { leadId })}
+      onRetry={retry}
+      onToggleQualifiedFilter={() => {
+        setSelectedStage((current) => current === 'qualified' ? undefined : 'qualified');
+      }}
+      onTogglePriorityFilter={() => {
+        setSelectedPriority((current) => current === 'high' ? undefined : 'high');
+      }}
       onToggleSort={() => setSortOrder((current) => current === 'updated' ? 'value' : 'updated')}
     />
   );

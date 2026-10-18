@@ -19,6 +19,7 @@ export type AppButtonProps = Omit<PressableProps, 'children' | 'style' | 'onPres
 
 export const AppButton = ({
   disabled = false,
+  accessibilityLabel,
   leadingIcon,
   loading = false,
   style,
@@ -31,6 +32,7 @@ export const AppButton = ({
   return (
     <AppPressable
       {...props}
+      accessibilityLabel={accessibilityLabel ?? title}
       accessibilityState={{ ...props.accessibilityState, disabled: inactive, busy: loading }}
       disabled={inactive}
       pressedStyle={variantStyles[variant].pressed}

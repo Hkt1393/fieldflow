@@ -7,6 +7,7 @@ import { AppText } from './AppText';
 export type AppTextInputProps = Omit<TextInputProps, 'style'> & {
   disabled?: boolean;
   error?: boolean;
+  errorMessage?: string;
   inputStyle?: StyleProp<TextStyle>;
   label?: string;
   labelAccessory?: ReactNode;
@@ -21,6 +22,7 @@ export const AppTextInput = ({
   containerStyle,
   disabled = false,
   error = false,
+  errorMessage,
   focused = false,
   inputStyle,
   label,
@@ -42,7 +44,7 @@ export const AppTextInput = ({
       style={[
         styles.inputContainer,
         focused && styles.inputContainerFocused,
-        error && styles.inputContainerError,
+        (error || Boolean(errorMessage)) && styles.inputContainerError,
         disabled && styles.inputContainerDisabled,
         containerStyle,
       ]}
@@ -57,11 +59,17 @@ export const AppTextInput = ({
       />
       {rightAccessory}
     </View>
+    {errorMessage ? (
+      <AppText accessibilityLiveRegion="polite" color="error" style={styles.errorMessage} variant="caption">
+        {errorMessage}
+      </AppText>
+    ) : null}
   </View>
 );
 
 const styles = StyleSheet.create({
   fieldGroup: { gap: spacing.extraSmall },
+  errorMessage: { marginLeft: spacing.extraSmall },
   labelRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   inputContainer: {
     minHeight: 44,

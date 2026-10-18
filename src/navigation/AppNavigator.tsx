@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import CreateFollowUpScreen from '../screens/followUps/CreateFollowUp';
+import EditFollowUpScreen from '../screens/followUps/EditFollowUp';
 import CreateLeadScreen from '../screens/leads/CreateLead';
 import EditLeadScreen from '../screens/leads/EditLead';
 import LeadDetailsScreen from '../screens/leads/LeadDetails';
@@ -21,5 +22,6 @@ export const AppNavigator = () => (
     <Stack.Screen name={ROUTES.CreateLead} component={CreateLeadScreen} />
     <Stack.Screen name={ROUTES.EditLead} component={EditLeadScreen} />
     <Stack.Screen name={ROUTES.CreateFollowUp} component={CreateFollowUpScreen} />
+    <Stack.Screen name={ROUTES.EditFollowUp} component={EditFollowUpScreen} />
   </Stack.Navigator>
 );

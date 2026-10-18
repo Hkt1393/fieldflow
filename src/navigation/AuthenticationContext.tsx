@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 
 export type AuthenticationContextValue = {
   onContinue: () => void;
+  onSignOut: () => void;
 };
 
 export const AuthenticationContext =

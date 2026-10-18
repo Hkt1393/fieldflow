@@ -13,10 +13,11 @@ export type TabParamList = {
 
 export type AppStackParamList = {
   Tabs: NavigatorScreenParams<TabParamList> | undefined;
-  LeadDetails: undefined;
+  LeadDetails: { leadId?: string } | undefined;
   CreateLead: undefined;
-  EditLead: undefined;
+  EditLead: { leadId: string };
   CreateFollowUp: undefined;
+  EditFollowUp: { followUpId: string };
 };
 
 export type RootStackParamList = {

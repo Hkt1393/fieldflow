@@ -1,28 +1,51 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type ViewStyle } from 'react-native';
 
-import { colors, scaleFont, scaleRadius, spacing } from '../../../theme';
+import { colors, radius, spacing, typography } from '../../../theme';
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background.primary,
-    padding: spacing.medium,
-  },
-  title: {
-    color: colors.text.primary,
-    fontSize: scaleFont(20),
-  },
-  action: {
-    marginTop: spacing.medium,
-    borderRadius: scaleRadius(8),
-    backgroundColor: colors.primary.default,
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.small,
-  },
-  actionText: {
-    color: colors.background.primary,
-    fontSize: scaleFont(16),
-  },
+  safeArea: { flex: 1, backgroundColor: colors.background.primary },
+  content: { gap: spacing.large, paddingHorizontal: spacing.medium, paddingTop: spacing.small, paddingBottom: spacing.large },
+  header: { minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: spacing.small },
+  brandMark: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center', borderRadius: radius.medium, backgroundColor: colors.primary.default },
+  brandCopy: { flex: 1, gap: 2 },
+  brandName: { color: colors.primary.default },
+  localPill: { minHeight: 22, flexDirection: 'row', alignItems: 'center', gap: spacing.extraSmall, paddingHorizontal: spacing.small, borderRadius: radius.full, backgroundColor: colors.success.background },
+  localDot: { width: 7, height: 7, borderRadius: radius.full, backgroundColor: colors.success.text },
+  profileAvatar: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.border.strong, borderRadius: radius.full, backgroundColor: colors.primary.default },
+  profileCard: { gap: spacing.medium, padding: spacing.medium },
+  profileHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.medium },
+  largeAvatar: { width: 68, height: 74, alignItems: 'center', justifyContent: 'center', borderRadius: radius.large, backgroundColor: colors.primary.subtle },
+  profileCopy: { flex: 1, minWidth: 0, gap: spacing.extraSmall },
+  profileName: { flexShrink: 1 },
+  demoBadge: { paddingHorizontal: spacing.small, paddingVertical: spacing.extraSmall, borderRadius: radius.full, backgroundColor: colors.primary.subtle },
+  pipelineSummary: { gap: spacing.small, padding: spacing.medium, borderRadius: radius.small, backgroundColor: colors.info.background },
+  pipelineSummaryHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.small },
+  pipelineSummaryTitle: { flexDirection: 'row', alignItems: 'center', gap: spacing.small, flexShrink: 1 },
+  progressTrack: { height: 9, overflow: 'hidden', borderRadius: radius.full, backgroundColor: colors.surface.primary },
+  progressFill: { height: '100%', borderRadius: radius.full, backgroundColor: colors.primary.default },
+  metricFeedback: { minHeight: 42, flexDirection: 'row', alignItems: 'center', gap: spacing.small },
+  metricRow: { flexDirection: 'row', gap: spacing.small },
+  metricTile: { flex: 1, minWidth: 0, minHeight: 68, alignItems: 'center', justifyContent: 'center', gap: spacing.extraSmall, paddingHorizontal: spacing.extraSmall, borderRadius: radius.small, backgroundColor: colors.background.primary },
+  metricValue: typography.headlineMd,
+  section: { gap: spacing.small },
+  sectionTitle: { marginHorizontal: spacing.extraSmall },
+  menuCard: { paddingVertical: spacing.extraSmall, paddingHorizontal: spacing.small },
+  menuItem: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: spacing.small, paddingVertical: spacing.small, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border.default },
+  menuItemLast: { borderBottomWidth: 0 },
+  menuItemPressed: { backgroundColor: colors.background.elevated },
+  menuIconBox: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: radius.small, backgroundColor: colors.info.background },
+  menuCopy: { flex: 1, minWidth: 0, gap: spacing.extraSmall },
+  statusBadge: { maxWidth: '25%', paddingHorizontal: spacing.small, paddingVertical: spacing.extraSmall, borderRadius: radius.full, backgroundColor: colors.info.background },
+  localBadge: { backgroundColor: colors.success.background },
+  lightBadge: { backgroundColor: colors.background.elevated },
+  signOutCard: { minHeight: 68, flexDirection: 'row', alignItems: 'center', gap: spacing.small, padding: spacing.medium, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.border.default, borderRadius: radius.large, backgroundColor: colors.surface.primary },
+  signOutPressed: { backgroundColor: colors.error.background },
+  signOutIcon: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: radius.small, backgroundColor: colors.error.background },
+  signOutCopy: { flex: 1, gap: spacing.extraSmall },
+  footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.small, paddingTop: spacing.small, paddingBottom: spacing.large },
+  footerText: { flexShrink: 1, textAlign: 'center' },
+});
+
+export const getQualifiedProgressStyle = (percentage: number): ViewStyle => ({
+  width: `${Math.max(0, Math.min(100, percentage))}%`,
 });

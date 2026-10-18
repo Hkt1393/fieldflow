@@ -41,6 +41,7 @@ export const styles = StyleSheet.create({
   chipsScroll: { flexGrow: 0 },
   chipsRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.small },
   activeFilterChip: { minHeight: 30, flexDirection: 'row', alignItems: 'center', gap: spacing.small, paddingHorizontal: spacing.small, borderWidth: 1, borderColor: colors.primary.default, borderRadius: radius.full, backgroundColor: colors.text.primary },
+  inactiveFilterChip: { backgroundColor: colors.background.elevated },
   addFilterButton: { minHeight: 30, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: spacing.small, borderRadius: radius.full, backgroundColor: colors.background.elevated },
   pipelineCard: { minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: spacing.small, marginTop: spacing.extraSmall, paddingHorizontal: spacing.medium, paddingVertical: spacing.small, borderRadius: radius.large, backgroundColor: colors.background.elevated },
   pipelineIcon: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center', borderRadius: radius.medium, backgroundColor: colors.surface.primary },
@@ -69,7 +70,9 @@ export const styles = StyleSheet.create({
   nextAction: { minHeight: 36, flexDirection: 'row', alignItems: 'center', gap: spacing.small, paddingLeft: spacing.small, borderRadius: radius.small, backgroundColor: colors.background.elevated },
   nextActionText: { flex: 1, fontSize: scaleFont(11), letterSpacing: 0.12 },
   callButton: { width: 34, height: 30, alignItems: 'center', justifyContent: 'center', marginRight: 3, borderRadius: radius.small, backgroundColor: colors.surface.primary },
-  emptyState: { minHeight: 100, alignItems: 'center', justifyContent: 'center', padding: spacing.medium, borderRadius: radius.large, backgroundColor: colors.surface.primary },
+  updatedAtRow: { minHeight: 20, flexDirection: 'row', alignItems: 'center', gap: spacing.extraSmall, paddingHorizontal: spacing.small },
+  updatedAtText: { flex: 1, fontSize: scaleFont(11) },
+  emptyState: { minHeight: 100, alignItems: 'center', justifyContent: 'center', gap: spacing.small, padding: spacing.medium, borderRadius: radius.large, backgroundColor: colors.surface.primary },
   showingFooter: { minHeight: 42, flexDirection: 'row', alignItems: 'center', gap: spacing.small, marginTop: spacing.small, paddingHorizontal: spacing.small, borderRadius: radius.large, backgroundColor: colors.surface.primary },
   footerCopy: { flex: 1, fontSize: scaleFont(10) },
 });

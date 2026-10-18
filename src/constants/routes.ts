@@ -10,5 +10,6 @@ export const ROUTES = {
   EditLead: 'EditLead',
   FollowUps: 'FollowUps',
   CreateFollowUp: 'CreateFollowUp',
+  EditFollowUp: 'EditFollowUp',
   More: 'More',
 } as const;

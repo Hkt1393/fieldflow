@@ -1,19 +1,27 @@
-import { Pressable, ScrollView, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppIcon, AppText } from '../../../components/ui';
+import { AppButton, AppIcon, AppText } from '../../../components/ui';
 import { strings } from '../../../constants/strings';
-import type { LeadSummary } from '../../../features/leads/types';
+import type { LeadPriority, LeadStatus, LeadSummary } from '../../../features/leads/types';
 import { colors } from '../../../theme';
 import { avatarTextTones, avatarTones, priorityTones, statusTones, styles } from './styles';
 
 type LeadsViewProps = {
   leads: LeadSummary[];
+  isLoading: boolean;
+  hasError: boolean;
   search: string;
+  selectedFilterCount: number;
+  selectedPriority: LeadPriority | undefined;
+  selectedStage: LeadStatus | undefined;
   sortOrder: 'updated' | 'value';
   onAddLead: () => void;
   onChangeSearch: (value: string) => void;
-  onOpenLead: () => void;
+  onOpenLead: (leadId: string) => void;
+  onRetry: () => void;
+  onToggleQualifiedFilter: () => void;
+  onTogglePriorityFilter: () => void;
   onToggleSort: () => void;
 };
 
@@ -26,11 +34,19 @@ const statusLabels = {
 
 const LeadsView = ({
   leads,
+  isLoading,
+  hasError,
   search,
+  selectedFilterCount,
+  selectedPriority,
+  selectedStage,
   sortOrder,
   onAddLead,
   onChangeSearch,
   onOpenLead,
+  onRetry,
+  onToggleQualifiedFilter,
+  onTogglePriorityFilter,
   onToggleSort,
 }: LeadsViewProps) => (
   <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -106,7 +122,9 @@ const LeadsView = ({
         <View style={styles.filterButton}>
           <AppIcon color="brand" name="filter" size={17} />
           <AppText variant="labelLg">{strings.leads.filters}</AppText>
-          <View style={styles.filterCount}><AppText color="inverse" variant="labelMd">2</AppText></View>
+          <View style={styles.filterCount}>
+            <AppText color="inverse" variant="labelMd">{selectedFilterCount}</AppText>
+          </View>
         </View>
         <Pressable accessibilityRole="button" onPress={onToggleSort} style={styles.sortButton}>
           <AppIcon color="secondary" name="sort" size={17} />
@@ -123,14 +141,40 @@ const LeadsView = ({
         showsHorizontalScrollIndicator={false}
         style={styles.chipsScroll}
       >
-        <View style={styles.activeFilterChip}>
-          <AppText color="inverse" variant="labelMd">{strings.leads.qualifiedFilter}</AppText>
-          <AppIcon color="inverse" name="close" size={14} />
-        </View>
-        <View style={styles.activeFilterChip}>
-          <AppText color="inverse" variant="labelMd">{strings.leads.priorityFilter}</AppText>
-          <AppIcon color="inverse" name="close" size={14} />
-        </View>
+        <Pressable
+          accessibilityHint={selectedStage === 'qualified' ? strings.common.removeFilter : strings.leads.selectFilter}
+          accessibilityLabel={strings.leads.qualifiedFilter}
+          accessibilityRole="button"
+          accessibilityState={{ selected: selectedStage === 'qualified' }}
+          hitSlop={7}
+          onPress={onToggleQualifiedFilter}
+          style={[
+            styles.activeFilterChip,
+            selectedStage !== 'qualified' && styles.inactiveFilterChip,
+          ]}
+        >
+          <AppText color={selectedStage === 'qualified' ? 'inverse' : 'brand'} variant="labelMd">
+            {strings.leads.qualifiedFilter}
+          </AppText>
+          <AppIcon color={selectedStage === 'qualified' ? 'inverse' : 'brand'} name={selectedStage === 'qualified' ? 'close' : 'plus'} size={14} />
+        </Pressable>
+        <Pressable
+          accessibilityHint={selectedPriority === 'high' ? strings.common.removeFilter : strings.leads.selectFilter}
+          accessibilityLabel={strings.leads.priorityFilter}
+          accessibilityRole="button"
+          accessibilityState={{ selected: selectedPriority === 'high' }}
+          hitSlop={7}
+          onPress={onTogglePriorityFilter}
+          style={[
+            styles.activeFilterChip,
+            selectedPriority !== 'high' && styles.inactiveFilterChip,
+          ]}
+        >
+          <AppText color={selectedPriority === 'high' ? 'inverse' : 'brand'} variant="labelMd">
+            {strings.leads.priorityFilter}
+          </AppText>
+          <AppIcon color={selectedPriority === 'high' ? 'inverse' : 'brand'} name={selectedPriority === 'high' ? 'close' : 'plus'} size={14} />
+        </Pressable>
         <View style={styles.addFilterButton}>
           <AppIcon color="brand" name="plus" size={15} />
           <AppText color="brand" variant="labelMd">{strings.leads.addFilter}</AppText>
@@ -158,15 +202,29 @@ const LeadsView = ({
         </AppText>
       </View>
 
-      {leads.length === 0 ? (
+      {isLoading ? (
+        <View accessibilityLiveRegion="polite" style={styles.emptyState}>
+          <ActivityIndicator color={colors.primary.default} size="small" />
+          <AppText color="secondary" variant="bodyMd">{strings.leads.loading}</AppText>
+        </View>
+      ) : hasError ? (
+        <View accessibilityRole="alert" style={styles.emptyState}>
+          <AppText color="secondary" variant="bodyMd">{strings.leads.loadError}</AppText>
+          <AppButton onPress={onRetry} title={strings.common.retry} variant="secondary" />
+        </View>
+      ) : leads.length === 0 ? (
         <View style={styles.emptyState}>
-          <AppText color="secondary" variant="bodyMd">{strings.leads.emptySearch}</AppText>
+          <AppText color="secondary" variant="bodyMd">
+            {selectedStage || selectedPriority
+              ? strings.leads.emptyFilters
+              : search.trim().length > 0 ? strings.leads.emptySearch : strings.leads.empty}
+          </AppText>
         </View>
       ) : leads.map((lead) => (
         <Pressable
           accessibilityRole="button"
-          key={lead.name}
-          onPress={onOpenLead}
+          key={lead.id}
+          onPress={() => onOpenLead(lead.id)}
           style={styles.leadCard}
         >
           <View style={styles.leadMain}>
@@ -204,6 +262,12 @@ const LeadsView = ({
             <View style={styles.callButton}>
               <AppIcon color="brand" name="phone" size={17} />
             </View>
+          </View>
+          <View style={styles.updatedAtRow}>
+            <AppIcon color="secondary" name="clock" size={13} />
+            <AppText color="secondary" numberOfLines={1} style={styles.updatedAtText} variant="bodySm">
+              {strings.leads.details.updatedAt}: {lead.updatedAt}
+            </AppText>
           </View>
         </Pressable>
       ))}
