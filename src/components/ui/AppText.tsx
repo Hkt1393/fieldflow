@@ -3,7 +3,7 @@ import { StyleSheet, Text, type StyleProp, type TextProps, type TextStyle } from
 import { colors, typography } from '../../theme';
 
 export type AppTextVariant = keyof typeof typography;
-export type AppTextColor = 'primary' | 'secondary' | 'muted' | 'inverse' | 'brand' | 'success' | 'error' | 'info';
+export type AppTextColor = 'primary' | 'secondary' | 'muted' | 'inverse' | 'brand' | 'success' | 'successStrong' | 'error' | 'info';
 
 const textColorStyles = StyleSheet.create({
   primary: { color: colors.text.primary },
@@ -12,6 +12,7 @@ const textColorStyles = StyleSheet.create({
   inverse: { color: colors.text.inverse },
   brand: { color: colors.primary.default },
   success: { color: colors.success.text },
+  successStrong: { color: colors.success.text },
   error: { color: colors.error.text },
   info: { color: colors.info.default },
 });

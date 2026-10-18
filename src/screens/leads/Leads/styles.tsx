@@ -1,28 +1,105 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet, type TextStyle, type ViewStyle } from 'react-native';
 
-import { colors, scaleFont, scaleRadius, spacing } from '../../../theme';
+import { colors, radius, scaleFont, scaleRadius, scaleWidth, spacing } from '../../../theme';
+import type { LeadAvatarTone, LeadStatus } from '../../../features/leads/types';
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background,
-    padding: spacing.medium,
-  },
-  title: {
-    color: colors.text,
-    fontSize: scaleFont(20),
-  },
-  action: {
-    marginTop: spacing.medium,
-    borderRadius: scaleRadius(8),
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.small,
-  },
-  actionText: {
-    color: colors.background,
-    fontSize: scaleFont(16),
-  },
+  safeArea: { flex: 1, backgroundColor: colors.background.primary },
+  brandHeader: { minHeight: scaleWidth(62), flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.medium, backgroundColor: colors.surface.primary, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border.default },
+  brandMark: { width: scaleWidth(34), height: scaleWidth(34), justifyContent: 'center', gap: 3, paddingHorizontal: 8, borderRadius: scaleRadius(8), backgroundColor: colors.primary.default },
+  brandMarkLine: { width: 16, height: 2, borderRadius: 1, backgroundColor: colors.surface.primary },
+  brandMarkShortLine: { width: 11, height: 2, borderRadius: 1, backgroundColor: colors.surface.primary },
+  brandMarkDot: { position: 'absolute', right: 5, bottom: 8, width: 4, height: 4, borderRadius: 2, backgroundColor: colors.info.default },
+  brandCopy: { flex: 1, marginLeft: spacing.small },
+  brandTitleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.small },
+  brandTitle: { color: colors.primary.default },
+  syncBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.success.background },
+  syncDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.success.text },
+  brandSubtitle: { marginTop: 1, letterSpacing: 0.3 },
+  headerIconButton: { width: 40, height: 44, alignItems: 'center', justifyContent: 'center', marginRight: spacing.small },
+  profileAvatar: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.border.strong, borderRadius: radius.full, backgroundColor: colors.primary.default },
+  profileInitials: { fontSize: scaleFont(12) },
+  scrollContent: { gap: spacing.small, paddingHorizontal: spacing.medium, paddingTop: spacing.small, paddingBottom: spacing.large },
+  offlineBanner: { minHeight: 36, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.medium, borderRadius: radius.large, backgroundColor: colors.info.background },
+  offlineMessage: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.small },
+  offlineDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.info.default },
+  offlineText: { flexShrink: 1, fontSize: scaleFont(12) },
+  queueAction: { flexDirection: 'row', alignItems: 'center', gap: 4, marginLeft: spacing.small },
+  titleRow: { minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: spacing.extraSmall },
+  headingGroup: { flexDirection: 'row', alignItems: 'center', gap: spacing.small },
+  pageTitle: { fontSize: scaleFont(26), lineHeight: scaleFont(32) },
+  totalBadge: { paddingHorizontal: 9, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.primary.subtle },
+  addLeadButton: { minHeight: 42, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.small, paddingHorizontal: spacing.medium, borderRadius: radius.large, backgroundColor: colors.primary.default },
+  addLeadText: { fontSize: scaleFont(14) },
+  searchField: { minHeight: 46, flexDirection: 'row', alignItems: 'center', gap: spacing.small, paddingHorizontal: spacing.medium, borderRadius: radius.large, backgroundColor: colors.surface.primary, ...Platform.select({ ios: { shadowColor: colors.text.primary, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2 }, android: { elevation: 1 } }) },
+  searchInput: { flex: 1, paddingVertical: 0, color: colors.text.primary, fontFamily: 'Inter_400Regular', fontSize: scaleFont(14) },
+  controlsRow: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.small },
+  filterButton: { minHeight: 38, flexDirection: 'row', alignItems: 'center', gap: spacing.small, paddingHorizontal: spacing.medium, borderRadius: radius.medium, backgroundColor: colors.surface.primary },
+  filterCount: { width: 20, height: 20, alignItems: 'center', justifyContent: 'center', borderRadius: radius.full, backgroundColor: colors.primary.default },
+  sortButton: { minHeight: 38, flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: spacing.small, paddingHorizontal: spacing.small, borderRadius: radius.medium, backgroundColor: colors.surface.primary },
+  sortLabel: { flexShrink: 1 },
+  chipsScroll: { flexGrow: 0 },
+  chipsRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.small },
+  activeFilterChip: { minHeight: 30, flexDirection: 'row', alignItems: 'center', gap: spacing.small, paddingHorizontal: spacing.small, borderWidth: 1, borderColor: colors.primary.default, borderRadius: radius.full, backgroundColor: colors.text.primary },
+  addFilterButton: { minHeight: 30, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: spacing.small, borderRadius: radius.full, backgroundColor: colors.background.elevated },
+  pipelineCard: { minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: spacing.small, marginTop: spacing.extraSmall, paddingHorizontal: spacing.medium, paddingVertical: spacing.small, borderRadius: radius.large, backgroundColor: colors.background.elevated },
+  pipelineIcon: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center', borderRadius: radius.medium, backgroundColor: colors.surface.primary },
+  pipelineCopy: { flex: 1 },
+  pipelineLabel: { fontSize: scaleFont(10), letterSpacing: 0.45 },
+  pipelineValue: { fontSize: scaleFont(20), lineHeight: scaleFont(25) },
+  growthBadge: { minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: spacing.small, borderRadius: radius.small, backgroundColor: colors.surface.primary },
+  listHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: spacing.extraSmall },
+  priorityHeading: { letterSpacing: 0.3 },
+  leadCard: { gap: spacing.medium, padding: spacing.medium, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.border.default, borderRadius: radius.large, backgroundColor: colors.surface.primary, ...Platform.select({ ios: { shadowColor: colors.text.primary, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2 }, android: { elevation: 1 } }) },
+  leadMain: { minHeight: 74, flexDirection: 'row', alignItems: 'flex-start', gap: spacing.small },
+  leadAvatar: { width: 42, height: 42, alignItems: 'center', justifyContent: 'center', borderRadius: radius.medium },
+  avatarInitials: { fontSize: scaleFont(18) },
+  leadIdentity: { flex: 1, minWidth: 0 },
+  leadNameRow: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  leadName: { flexShrink: 1, fontSize: scaleFont(18), lineHeight: scaleFont(23) },
+  priorityDot: { width: 7, height: 7, borderRadius: radius.full },
+  leadTitle: { marginTop: 2, fontSize: scaleFont(14) },
+  companyRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: spacing.extraSmall },
+  companyName: { flexShrink: 1, letterSpacing: 0.1 },
+  leadValueColumn: { minWidth: scaleWidth(70), alignItems: 'flex-end', gap: spacing.extraSmall },
+  leadValue: { fontSize: scaleFont(15), lineHeight: scaleFont(21) },
+  statusBadge: { paddingHorizontal: spacing.small, paddingVertical: 2, borderRadius: radius.full },
+  statusText: { color: colors.primary.default, fontSize: scaleFont(11) },
+  moreButton: { width: 28, height: 24, alignItems: 'center', justifyContent: 'center' },
+  nextAction: { minHeight: 36, flexDirection: 'row', alignItems: 'center', gap: spacing.small, paddingLeft: spacing.small, borderRadius: radius.small, backgroundColor: colors.background.elevated },
+  nextActionText: { flex: 1, fontSize: scaleFont(11), letterSpacing: 0.12 },
+  callButton: { width: 34, height: 30, alignItems: 'center', justifyContent: 'center', marginRight: 3, borderRadius: radius.small, backgroundColor: colors.surface.primary },
+  emptyState: { minHeight: 100, alignItems: 'center', justifyContent: 'center', padding: spacing.medium, borderRadius: radius.large, backgroundColor: colors.surface.primary },
+  showingFooter: { minHeight: 42, flexDirection: 'row', alignItems: 'center', gap: spacing.small, marginTop: spacing.small, paddingHorizontal: spacing.small, borderRadius: radius.large, backgroundColor: colors.surface.primary },
+  footerCopy: { flex: 1, fontSize: scaleFont(10) },
+});
+
+export const avatarTones: Record<LeadAvatarTone, ViewStyle> = StyleSheet.create({
+  blue: { backgroundColor: colors.primary.default },
+  green: { backgroundColor: colors.success.text },
+  cyan: { backgroundColor: colors.info.default },
+  sky: { backgroundColor: colors.avatar.sky },
+  coral: { backgroundColor: colors.error.background },
+});
+
+export const avatarTextTones: Record<LeadAvatarTone, TextStyle> = StyleSheet.create({
+  blue: { color: colors.surface.primary },
+  green: { color: colors.surface.primary },
+  cyan: { color: colors.surface.primary },
+  sky: { color: colors.text.primary },
+  coral: { color: colors.error.text },
+});
+
+export const priorityTones: Record<LeadStatus, ViewStyle> = StyleSheet.create({
+  qualified: { backgroundColor: colors.error.default },
+  proposal: { backgroundColor: colors.info.default },
+  new: { backgroundColor: colors.info.default },
+  contacted: { backgroundColor: colors.text.secondary },
+});
+
+export const statusTones: Record<LeadStatus, ViewStyle> = StyleSheet.create({
+  qualified: { backgroundColor: colors.primary.subtle },
+  proposal: { backgroundColor: colors.info.background },
+  new: { backgroundColor: colors.success.default },
+  contacted: { backgroundColor: colors.info.background },
 });

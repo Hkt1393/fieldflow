@@ -10,6 +10,7 @@ export const colors = {
   // Informational / utility
   info: {
     default: '#0284C7',
+    background: '#DBEAFE',
   },
 
   // Semantic states
@@ -91,6 +92,10 @@ export const colors = {
     focusRing: 'rgba(30, 64, 175, 0.15)',
     disabledBackground: '#F1F5F9',
     disabledText: '#94A3B8',
+  },
+
+  avatar: {
+    sky: '#7DD3FC',
   },
 
   // Scrim / overlays
